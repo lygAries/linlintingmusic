@@ -26,13 +26,13 @@
 	<div class="midlsongname">{{songname}}</div>
 	<div class="artistsname">{{artistsname}}</div>
 	<div class='nono'>
-	<img class="imgh" :class={running:isoning} :src="artimg">
+	<img class="imgh" @click="stopplay()" :class={running:isoning} :src="artimg">
 	</div>
 	</div>
 	<!-- 左边评论区 -->
 	<div class='comlist'>
 		<span class="hotcomment">热门评论</span>
-		<hr>
+		<hr class="comline">
 		<dl class="commentdl" v-for="(commentshow,index) in comment" :key="index">
 		<dt class="commentdt">
 	<img :src="commentshow.user.avatarUrl" class="commentimg" alt=" ">
@@ -46,7 +46,7 @@
 <!-- 低端 -->
    <div class='bottom'>
 	<div class="btnbg" @click="nextsong"><div class="nextbtn"></div></div>
-	<audio :src="songurl" @ended="nextsong()" controls="controls" autoplay="autoplay" class="audiobox"></audio>
+	<audio :src="songurl" @ended="nextsong()" ref="audioplay" controls="controls" autoplay="autoplay" class="audiobox"></audio>
    </div>
   </div>
 </template>
@@ -133,7 +133,16 @@ export default {
 			})
 		},
 		
-		
+		//暂停播放
+		stopplay(){
+			if(this.$refs.audioplay.paused){
+			this.$refs.audioplay.play();
+			this.isoning=true;
+		}else{
+			this.$refs.audioplay.pause();
+			this.isoning=false;
+		}
+		},
 		//点击下一首播放按钮
 		nextsong(){              //下一首
 		var that=this;
@@ -173,7 +182,7 @@ export default {
 <style scoped>
 	/* 整个框架 */
 	.wholeframe{
-		width: 800px;
+		width: 1000px;
 		height: 500px;
 		
 		margin: 0 auto;
@@ -181,7 +190,7 @@ export default {
 	/* 顶端 */
 	.top{
 		height: 50px;
-		width: 800px;
+		width: 1000px;
 		background-color: aqua;
 		
 	}
@@ -212,31 +221,32 @@ export default {
 	
 	/* 搜索框 */
 	.searchbox{
-	margin-left: 300px;
+	
 		margin-top: 12px;
 		width: 205px;
 		height: 25px;
 		border: none;
 		outline: none;
 		border-radius: 25px;
+		position: relative;
+		left: 160px;
 		
 	}
 	/* 搜索按钮 */
 	.searchbtn{
 		border: none;
 		background-color: rgb(7, 219, 247);
-		float: right;
 		margin-top: 15px;
-		margin-right: 20px;
 		color: white;
 		border-radius: 2px;
-		
+		position: relative;
+		left: 165px;
 		
 	}
 	/* 中间身体部分 */
 	.body{
 		height: 407px;
-		width: 800px;
+		width:1000px;
 		
 	}
 	
@@ -245,7 +255,6 @@ export default {
 	height: 407px;
 	width: 460px;
 	float: left;
-	background-image: url("http://39.108.194.218/dd.png");
 	
 	}
 	/* 封面上方歌曲名字显示 */
@@ -274,9 +283,14 @@ export default {
 	animation: hh 6s linear infinite paused;
 	}
 	.nono{
-		width: 451px;
+		width: 300px;
+		height: 300px;
 		text-align: center;
-		margin-top: 18px;
+		background-color: gray;
+		border-radius: 100%;
+		position: relative;
+		top: 20px;
+		left: 16%;
 	}
 	/* 歌曲封面旋转 */
 	.running{
@@ -293,7 +307,7 @@ export default {
 
 	/* 左边音乐列表 */
 	.list{
-		width: 170px;
+		width: 270px;
 		height: 407px;
 		
 		background-color:cornsilk ;
@@ -308,7 +322,7 @@ export default {
 		
 	}
 	.listli{
-		height: 20px;
+		height: 25px;
 		border-bottom: 1px solid red;
 		cursor: pointer;
 	}
@@ -317,12 +331,12 @@ export default {
 	.songname{
 		float: left;
 		font-size: 10px;
-		margin-top: 4px;
+		
 	}
 	.songername{
 		float: right;
 		font-size: 10px;
-		margin-top: 4px;
+		
 	}
 	
 	
@@ -331,28 +345,21 @@ export default {
 	display: none;
 	}
 	
-	/* 右边评论区 */
+	/* 右边评论区 整体*/
 	.comlist{
-	width: 172px;
+	width: 270px;
 	height: 407px;
 	background-color: rgba(25,250,225);
 	float: right;
-	}
-	
-	
-	/* 评论区整体 */
-	.comlist{
-	width: 170px;
-	height: 407px;
-	
-	float: right;
 	overflow-y: auto;
 	}
+	
+	
 	.commentbox::-webkit-scrollbar{
 	display: none;
 	}
 	
-	/* 评论滚动条 */
+	
 	
 	/* 左边音乐列表滚动条 */
 	.comlist::-webkit-scrollbar{
@@ -364,6 +371,14 @@ export default {
 	color: red;
 	font-size: 15px;
 	}
+	.comline{
+		border: 1px solid red;
+		border-bottom: none;
+		border-right: none;
+		border-left: none;
+		position: relative;
+		top: -5px;
+	}
 	.commentdl{
 	margin-top: 0px;
 	}
@@ -374,7 +389,7 @@ export default {
 	}
 	/* 评论网友的昵称 */
 	.commentdd1{
-	color: rgb(0, 195, 255);
+	color: red;
 	font-size: 12px;
 	margin-top: -30px;
 	}
@@ -385,7 +400,7 @@ export default {
 	/* 底部 */
 	.bottom{
 	height: 40px;
-	width: 800px;
+	width:1000px;
 	background-color: aliceblue;
 	position: absolute;
 	z-index: 2;
@@ -393,7 +408,7 @@ export default {
 	
 	.audiobox{
 	height: 40px;
-	width: 760px;
+	width: 960px;
 	background-color: aliceblue;
 	float: right;
 	}
